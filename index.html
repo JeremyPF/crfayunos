@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>21 DÍAS DE AYUNO - Minimalista</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+        
+        :root {
+            --bg-color: #f8f9fa;
+            --text-color: #212529;
+            --accent-color: #6366f1;
+            --accent-light: #a5b4fc;
+            --card-bg: #ffffff;
+            --border-radius: 12px;
+        }
+        
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            font-family: 'Inter', sans-serif;
+            color: var(--text-color);
+            background-color: var(--bg-color);
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin: 0;
+            background: linear-gradient(135deg, var(--accent-color), #8b5cf6);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            padding: 10px 0;
+        }
+        
+        .subtitle {
+            font-size: 0.9rem;
+            font-weight: 400;
+            opacity: 0.8;
+            margin-top: 5px;
+        }
+        
+        .day-tab {
+            margin-bottom: 15px;
+        }
+        
+        .day-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px;
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .day-header:before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 4px;
+            background: linear-gradient(to bottom, var(--accent-color), var(--accent-light));
+        }
+        
+        .day-header:active {
+            transform: scale(0.98);
+        }
+        
+        .day-name {
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .arrow {
+            transition: transform 0.3s ease;
+        }
+        
+        .day-content {
+            display: none;
+            padding: 0 15px 15px 15px;
+            background-color: var(--card-bg);
+            border-radius: 0 0 var(--border-radius) var(--border-radius);
+            margin-top: -5px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+        
+        .active .day-header {
+            border-radius: var(--border-radius) var(--border-radius) 0 0;
+        }
+        
+        .active .arrow {
+            transform: rotate(180deg);
+        }
+        
+        .active .day-content {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .person-list {
+            list-style-type: none;
+            margin: 0;
+            padding: 15px 0 0 0;
+        }
+        
+        .person-item {
+            padding: 10px 10px 10px 15px;
+            margin-bottom: 8px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            position: relative;
+            opacity: 0;
+            transform: translateY(10px);
+            animation: fadeInUp 0.3s ease forwards;
+        }
+        
+        .person-item:before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 4px;
+            background-color: var(--accent-light);
+            border-radius: 4px 0 0 4px;
+        }
+        
+        .person-item em {
+            font-style: normal;
+            font-weight: 600;
+        }
+        
+        .final-note {
+            text-align: center;
+            margin-top: 30px;
+            padding: 20px;
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+        
+        .sparkle {
+            display: inline-block;
+            animation: sparkle 1.5s infinite;
+            color: var(--accent-color);
+        }
+        
+        .counter {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 24px;
+            background-color: var(--accent-light);
+            color: white;
+            border-radius: 50%;
+            font-size: 0.7rem;
+            font-weight: 600;
+            margin-left: 8px;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes sparkle {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+        
+        /* Dark mode toggle */
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            background-color: var(--card-bg);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+            transition: all 0.3s ease;
+        }
+        
+        .theme-toggle svg {
+            width: 16px;
+            height: 16px;
+            stroke: var(--text-color);
+            transition: all 0.3s ease;
+        }
+        
+        /* Dark mode styles */
+        body.dark-mode {
+            --bg-color: #121212;
+            --text-color: #e0e0e0;
+            --card-bg: #1e1e1e;
+            --accent-light: #6366f1;
+        }
+        
+        body.dark-mode .person-item {
+            background-color: #2a2a2a;
+        }
+    </style>
+</head>
+<body>
+    <div class="theme-toggle" id="themeToggle">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" class="sun-icon" />
+            <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z" class="moon-icon" style="display: none;" />
+        </svg>
+    </div>
+    
+    <div class="container">
+        <div class="header">
+            <h1 class="title"><span class="sparkle">✨</span> 21 DÍAS DE AYUNO <span class="sparkle">✨</span></h1>
+            <p class="subtitle">Programa semanal</p>
+        </div>
+        
+        <div class="day-tab" id="lunes-tab">
+            <div class="day-header">
+                <div class="day-name">🙏 LUNES <span class="counter">12</span></div>
+                <div class="arrow">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                </div>
+            </div>
+            <div class="day-content">
+                <ul class="person-list">
+                    <li class="person-item">Franklin</li>
+                    <li class="person-item">Ingrid</li>
+                    <li class="person-item">Yesenia</li>
+                    <li class="person-item">Marvelis</li>
+                    <li class="person-item">Mariana Coroy</li>
+                    <li class="person-item">Señora Elis</li>
+                    <li class="person-item">Carmen</li>
+                    <li class="person-item">Amader</li>
+                    <li class="person-item">Yely</li>
+                    <li class="person-item">Francis</li>
+                    <li class="person-item">Victor</li>
+                    <li class="person-item">Ashley</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="day-tab" id="martes-tab">
+            <div class="day-header">
+                <div class="day-name">🙏 MARTES <span class="counter">10</span></div>
+                <div class="arrow">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                </div>
+            </div>
+            <div class="day-content">
+                <ul class="person-list">
+                    <li class="person-item">Misdalys</li>
+                    <li class="person-item">Eliomar</li>
+                    <li class="person-item">Mery Torres</li>
+                    <li class="person-item">Marianela</li>
+                    <li class="person-item">Evely Lastra</li>
+                    <li class="person-item">Nadiana</li>
+                    <li class="person-item">Hevert</li>
+                    <li class="person-item">Eduardo Lopez</li>
+                    <li class="person-item">Estefany Rosi</li>
+                    <li class="person-item">Blanco</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="day-tab" id="miercoles-tab">
+            <div class="day-header">
+                <div class="day-name">🙏 MIÉRCOLES <span class="counter">4</span></div>
+                <div class="arrow">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                </div>
+            </div>
+            <div class="day-content">
+                <ul class="person-list">
+                    <li class="person-item">Eduardo</li>
+                    <li class="person-item">Maria Elena</li>
+                    <li class="person-item">Brigida</li>
+                    <li class="person-item">Osvaldo</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="day-tab" id="jueves-tab">
+            <div class="day-header">
+                <div class="day-name">🙏 JUEVES <span class="counter">11</span></div>
+                <div class="arrow">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                </div>
+            </div>
+            <div class="day-content">
+                <ul class="person-list">
+                    <li class="person-item">Johana</li>
+                    <li class="person-item">Daler (madre)</li>
+                    <li class="person-item">Gabriela</li>
+                    <li class="person-item">Eladio</li>
+                    <li class="person-item">Ramona</li>
+                    <li class="person-item">Rubén Coroy <em>"Hijo"</em></li>
+                    <li class="person-item"><em>Todos los adolescentes</em></li>
+                    <li class="person-item">Gabriel</li>
+                    <li class="person-item">Cruz Sanchez</li>
+                    <li class="person-item">Alexa</li>
+                    <li class="person-item">Luisana</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="day-tab" id="viernes-tab">
+            <div class="day-header">
+                <div class="day-name">🙏 VIERNES <span class="counter">5</span></div>
+                <div class="arrow">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                </div>
+            </div>
+            <div class="day-content">
+                <ul class="person-list">
+                    <li class="person-item">Maria</li>
+                    <li class="person-item">Jesús</li>
+                    <li class="person-item">Roxana</li>
+                    <li class="person-item">Renire</li>
+                    <li class="person-item">Tino</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="day-tab" id="sabado-tab">
+            <div class="day-header">
+                <div class="day-name">🙏 SÁBADO <span class="counter">11</span></div>
+                <div class="arrow">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                </div>
+            </div>
+            <div class="day-content">
+                <ul class="person-list">
+                    <li class="person-item">Ruben Coroy</li>
+                    <li class="person-item">Angela Marquez</li>
+                    <li class="person-item">Heneida</li>
+                    <li class="person-item">Mariana Pinto</li>
+                    <li class="person-item">Jhonnielys</li>
+                    <li class="person-item">Dianabel Pinto</li>
+                    <li class="person-item">Militsa</li>
+                    <li class="person-item">Jorge Reyes</li>
+                    <li class="person-item">Marisol</li>
+                    <li class="person-item">José Carreño</li>
+                    <li class="person-item">Yhon</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="day-tab" id="domingo-tab">
+            <div class="day-header">
+                <div class="day-name">🙌 DOMINGO <span class="counter">1</span></div>
+                <div class="arrow">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                </div>
+            </div>
+            <div class="day-content">
+                <ul class="person-list">
+                    <li class="person-item"><em>Toda la Congregación en Ayuno</em></li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="final-note">
+            🌟 <strong>"Si alguno no está anotado, escriba un mensaje con el día que usted escoja."</strong> 🌟
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Toggle day tabs
+            const dayTabs = document.querySelectorAll('.day-tab');
+            
+            dayTabs.forEach(tab => {
+                const header = tab.querySelector('.day-header');
+                
+                header.addEventListener('click', () => {
+                    const isActive = tab.classList.contains('active');
+                    
+                    // Close all tabs
+                    dayTabs.forEach(t => t.classList.remove('active'));
+                    
+                    // Open current tab if it wasn't already open
+                    if (!isActive) {
+                        tab.classList.add('active');
+                        
+                        // Add animation delay to list items
+                        const items = tab.querySelectorAll('.person-item');
+                        items.forEach((item, index) => {
+                            item.style.animationDelay = `${index * 0.05}s`;
+                        });
+                    }
+                });
+            });
+            
+            // Theme toggle
+            const themeToggle = document.getElementById('themeToggle');
+            const sunIcon = document.querySelector('.sun-icon');
+            const moonIcon = document.querySelector('.moon-icon');
+            
+            // Check user preference
+            if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                document.body.classList.add('dark-mode');
+                sunIcon.style.display = 'none';
+                moonIcon.style.display = 'block';
+            }
+            
+            themeToggle.addEventListener('click', () => {
+                document.body.classList.toggle('dark-mode');
+                
+                if (document.body.classList.contains('dark-mode')) {
+                    sunIcon.style.display = 'none';
+                    moonIcon.style.display = 'block';
+                } else {
+                    sunIcon.style.display = 'block';
+                    moonIcon.style.display = 'none';
+                }
+            });
+            
+            // Open first tab by default
+            dayTabs[0].classList.add('active');
+            const firstTabItems = dayTabs[0].querySelectorAll('.person-item');
+            firstTabItems.forEach((item, index) => {
+                item.style.animationDelay = `${index * 0.05}s`;
+            });
+        });
+    </script>
+</body>
+</html>
